@@ -6,7 +6,7 @@
 #include <vector>
 #include <nlohmann/json.hpp>
  
-//function that helps converting lists of structs into JSON lists of objects
+//boilerplate that helps converting lists of structs into JSON lists of objects
 void to_json(nlohmann::json& j, const Contact& contact) {
 	j = nlohmann::json{
 		{"name", contact.getName()},
@@ -17,6 +17,15 @@ void to_json(nlohmann::json& j, const Contact& contact) {
 	};
 }
 
+//boilerplate that helps converting JSON lists of objects into vector of structs
+void from_json(const nlohmann::json& j, Contact& contact) {
+	contact.setEmail(j.at("email").get<std::string>());
+	contact.setName(j.at("name").get<std::string>());
+	contact.setPhoneNumber(j.at("phoneNumber").get<std::string>());
+	contact.setSurname(j.at("surname").get<std::string>());
+	contact.setTypeString(j.at("type").get<std::string>());
+}
+
 void contactsDeserialization(std::vector<Contact> &contacts) {
 	//Deserialization - read from file
 	std::ifstream myFileReading;
@@ -24,18 +33,23 @@ void contactsDeserialization(std::vector<Contact> &contacts) {
 	myFileReading.exceptions(std::ifstream::failbit);
 	try {
 		myFileReading.open("savedata.json");
+		//reads whole file and saves it into a string
+		std::string content((std::istreambuf_iterator<char>(myFileReading)),
+		(std::istreambuf_iterator<char>()));
 		myFileReading.close();
+
+		std::cout << "Loading file..." << std::endl;
+		//parses string into json object
+		nlohmann::json j = nlohmann::json::parse(content);
+		std::cout << j << std::endl;
+
+		//We convert JSON list of objects into vector of Contacts
+		std::vector<Contact> contacts2 = j;
+		std::cout << "File loaded!" << std::endl;
 	}
 	catch (std::ifstream::failure fail) {
 		std::cout << "File name not correct or it does not exist! Make sure to name your text file \"savedata\"" << std::endl;
 	}
-
-	nlohmann::json j;
-	j["name"] = "hello";
-	j["address"] = "somewhere";
-	j["age"] = 115;
-
-	std::cout << j.dump(3) << std::endl;
 }
 
 void contactsSerialization(std::vector<Contact> &contacts) {
@@ -44,9 +58,8 @@ void contactsSerialization(std::vector<Contact> &contacts) {
 	nlohmann::json j(contacts);
 	std::cout << j.dump(3) << std::endl;
 
-	//write to file
+	//write JSON data to file named "savedata.json"
 	std::fstream myFileWriting;
-
 	myFileWriting.exceptions(std::ifstream::badbit);
 	try {
 		myFileWriting.open("savedata.json", std::fstream::out);
@@ -56,7 +69,6 @@ void contactsSerialization(std::vector<Contact> &contacts) {
 		std::cout << "Failed to write!" << std::endl;
 	}
 	myFileWriting.close();
-
 }
 
 int main() {
@@ -70,7 +82,6 @@ int main() {
 	std::string phoneNumber;
 	ContactType type;
 
-	/*
 	//input
 	std::cout << "Name: ";
 	std::cin >> name;
@@ -90,7 +101,6 @@ int main() {
 	std::cout << surname;
 	std::cout << email;
 	std::cout << phoneNumber;
-	*/
 
 	std::cout << std::endl;
 	Contact person("Howdy", "Snow", "random.email@something.com", "031425960", ContactType::normal);
@@ -101,6 +111,7 @@ int main() {
 	myContacts.emplace_back(tmp);
 
 	contactsSerialization(myContacts);
+	contactsDeserialization(myContacts);
 
 	return 0;
 }

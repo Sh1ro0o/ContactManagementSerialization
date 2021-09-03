@@ -14,12 +14,35 @@ private:
 	std::string phoneNumber;
 	ContactType type;
 public:
+
+	Contact() {
+		this->name = "none";
+		this->surname = "none";
+		this->email = "none";
+		this->phoneNumber = "none";
+		this->type = ContactType::normal;
+	};
+
 	Contact(std::string name, std::string surname, std::string email, std::string phoneNumber, ContactType type) {
 		this->name = name;
 		this->surname = surname;
 		this->email = email;
 		this->phoneNumber = phoneNumber;
 		this->type = type;
+	}
+
+	//if type isnt "emergency" or "favorite" it's set to normal by default
+	Contact(std::string name, std::string surname, std::string email, std::string phoneNumber, std::string type) {
+		this->name = name;
+		this->surname = surname;
+		this->email = email;
+		this->phoneNumber = phoneNumber;
+		if (type == "emergency")
+			this->type = ContactType::emergency;
+		else if (type == "favorite")
+			this->type = ContactType::favorite;
+		else
+			this->type = ContactType::normal;
 	}
 
 	//SETTERS
@@ -41,6 +64,15 @@ public:
 
 	void setType(ContactType type) {
 		this->type = type;
+	}
+
+	void setTypeString(std::string type) {
+		if (type == "emergency")
+			this->type = ContactType::emergency;
+		else if (type == "favorite")
+			this->type = ContactType::favorite;
+		else
+			this->type = ContactType::normal;
 	}
 
 	//GETTERS
