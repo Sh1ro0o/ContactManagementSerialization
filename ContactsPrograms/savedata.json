@@ -1,0 +1,16 @@
+[
+   {
+      "email": "random.email@something.com",
+      "name": "Howdy",
+      "phoneNumber": "031425960",
+      "surname": "Snow",
+      "type": "normal"
+   },
+   {
+      "email": "random.email@something.com",
+      "name": "Rowdy",
+      "phoneNumber": "031425960",
+      "surname": "Snow",
+      "type": "emergency"
+   }
+]

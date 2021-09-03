@@ -44,27 +44,27 @@ public:
 	}
 
 	//GETTERS
-	std::string getName() {
+	std::string getName() const {
 		return name;
 	}
 
-	std::string getSurname() {
+	std::string getSurname() const {
 		return surname;
 	}
 
-	std::string getEmail() {
+	std::string getEmail() const {
 		return email;
 	}
 
-	std::string getPhoneNumber() {
+	std::string getPhoneNumber() const {
 		return phoneNumber;
 	}
 
-	ContactType getType() {
+	ContactType getType() const {
 		return type;
 	}
 
-	std::string typeToString() {
+	std::string typeToString() const {
 		if (type == ContactType::emergency)
 			return "emergency";
 		else if (type == ContactType::favorite)
@@ -73,7 +73,7 @@ public:
 			return "normal";
 	}
 
-	std::string toString() {
+	std::string toString() const {
 		std::stringstream ss;
 		ss << name << " " << surname << " " << email << " " << phoneNumber << " " << typeToString();
 		return ss.str();

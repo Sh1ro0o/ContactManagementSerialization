@@ -4,6 +4,60 @@
 #include "Contact.h"
 #include "ContactType.h"
 #include <vector>
+#include <nlohmann/json.hpp>
+ 
+//function that helps converting lists of structs into JSON lists of objects
+void to_json(nlohmann::json& j, const Contact& contact) {
+	j = nlohmann::json{
+		{"name", contact.getName()},
+		{"surname", contact.getSurname()},
+		{"email", contact.getEmail()},
+		{"phoneNumber", contact.getPhoneNumber()},
+		{"type", contact.typeToString()}
+	};
+}
+
+void contactsDeserialization(std::vector<Contact> &contacts) {
+	//Deserialization - read from file
+	std::ifstream myFileReading;
+
+	myFileReading.exceptions(std::ifstream::failbit);
+	try {
+		myFileReading.open("savedata.json");
+		myFileReading.close();
+	}
+	catch (std::ifstream::failure fail) {
+		std::cout << "File name not correct or it does not exist! Make sure to name your text file \"savedata\"" << std::endl;
+	}
+
+	nlohmann::json j;
+	j["name"] = "hello";
+	j["address"] = "somewhere";
+	j["age"] = 115;
+
+	std::cout << j.dump(3) << std::endl;
+}
+
+void contactsSerialization(std::vector<Contact> &contacts) {
+	//Seserialization
+	//converting Contacts struct into JSON
+	nlohmann::json j(contacts);
+	std::cout << j.dump(3) << std::endl;
+
+	//write to file
+	std::fstream myFileWriting;
+
+	myFileWriting.exceptions(std::ifstream::badbit);
+	try {
+		myFileWriting.open("savedata.json", std::fstream::out);
+		myFileWriting << j.dump(3);
+	}
+	catch (std::ifstream::failure fail) {
+		std::cout << "Failed to write!" << std::endl;
+	}
+	myFileWriting.close();
+
+}
 
 int main() {
 	//vector with all the contacts
@@ -16,6 +70,7 @@ int main() {
 	std::string phoneNumber;
 	ContactType type;
 
+	/*
 	//input
 	std::cout << "Name: ";
 	std::cin >> name;
@@ -35,28 +90,17 @@ int main() {
 	std::cout << surname;
 	std::cout << email;
 	std::cout << phoneNumber;
-
+	*/
 
 	std::cout << std::endl;
 	Contact person("Howdy", "Snow", "random.email@something.com", "031425960", ContactType::normal);
 	std::cout << person.toString() << std::endl;
+	myContacts.emplace_back(person);
 
-	//serialization - read from file
-	std::ifstream myFileReading;
+	Contact tmp("Rowdy", "Snow", "random.email@something.com", "031425960", ContactType::emergency);
+	myContacts.emplace_back(tmp);
 
-	myFileReading.exceptions(std::ifstream::failbit);
-	try {
-		myFileReading.open("savedata.txt");
-		myFileReading.close();
-	}
-	catch(std::ifstream::failure e) {
-		std::cout << "File name not correct or it does not exist! Make sure to name your text file \"savedata\"" << std::endl;
-	}
-
-	//serialization - write to file
-	std::ofstream myFileWriting;
-
-
+	contactsSerialization(myContacts);
 
 	return 0;
 }
