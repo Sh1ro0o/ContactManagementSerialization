@@ -94,6 +94,13 @@ int main() {
 	std::string phoneNumber;
 	ContactType type;
 
+
+	Contact tmp("Rowdy", "Snow", "random.email@something.com", "031425960", ContactType::emergency);
+	myContacts.emplace_back(tmp);
+
+	Contact tmp2("Johanna", "Snow", "random.email@something.com", "031425960", ContactType::emergency);
+	myContacts.emplace_back(tmp2);
+
 	int Selection = 0;
 
 	while (true) {
@@ -161,9 +168,10 @@ int main() {
 
 			std::cout << std::endl;
 			Contact person(name, surname, email, phoneNumber, ContactType::normal);
+			system("cls");
 
 			std::cout << "Do you wish to add a friend: " << person.toString() << " ?" << std::endl;
-			std::cout << "press ENTER to confirm, ANY key to cancel" << std::endl;
+			std::cout << "\npress ENTER to confirm, ANY key to cancel..." << std::endl;
 
 			//confirmation that you want to add the created friend to your friends list
 			char input = 0;
@@ -176,18 +184,63 @@ int main() {
 				break;
 
 			default:
-				std::cout << "Aborted, a friend has not been added!";
+				std::cout << "Aborted, a friend has not been added!" << std::endl;
 				break;
 			}
+
+			break;
 		}
 
 		//REMOVE A FRIEND CASE
 		case 1:
-			std::cout << "REMOVED A FRIEND" << std::endl;
-		}
+			short selectionRemoval = 0;
+			
+			if (myContacts.size() > 0) {
+				while (myContacts.size() > 0) {
+					std::cout << "   ||CHOOSE WHO YOU WISH TO REMOVE||" << std::endl;
+					std::cout << "   =================================" << std::endl;
+					for (int i = 0; i < myContacts.size(); i++) {
+						if (i == selectionRemoval)
+							std::cout << "=> " + myContacts[i].toString() << std::endl;
+						else
+							std::cout << "   " + myContacts[i].toString() << std::endl;
+					}
 
-		Contact tmp("Rowdy", "Snow", "random.email@something.com", "031425960", ContactType::emergency);
-		myContacts.emplace_back(tmp);
+					char input = 0;
+					switch (input = _getch()) {
+					case KEY_UP:
+						selectionRemoval--;
+						if (selectionRemoval < 0)
+							selectionRemoval = myContacts.size() - 1;
+						break;
+
+					case KEY_DOWN:
+						selectionRemoval++;
+						if (selectionRemoval == myContacts.size())
+							selectionRemoval = 0;
+						break;
+					}
+
+					system("cls");
+
+					if (input == KEY_ENTER) {
+						std::cout << "Are you sure you wish to remove " << myContacts[selectionRemoval].getName() << " "
+							<< myContacts[selectionRemoval].getSurname() << " ?" << std::endl;
+						std::cout << "\npress ENTER to confirm, ANY key to cancel..." << std::endl;
+						input = _getch();
+						if (input == KEY_ENTER) {
+							myContacts.erase(myContacts.begin() + selectionRemoval);
+							break;
+						}
+						break;
+					}
+				}
+			}
+			else {
+				std::cout << "Sorry, NO FRIENDS :(" << std::endl << std::endl;
+				system("pause");
+			}
+		}
 	}
 
 	//contactsDeserialization(myContacts);
