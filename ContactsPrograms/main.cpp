@@ -4,7 +4,15 @@
 #include "Contact.h"
 #include "ContactType.h"
 #include <vector>
+#include <Windows.h>
+#include <conio.h>
 #include <nlohmann/json.hpp>
+
+#define KEY_UP 72
+#define KEY_DOWN 80
+#define KEY_LEFT 75
+#define KEY_RIGHT 77
+#define KEY_ENTER 13
  
 //boilerplate that helps converting lists of structs into JSON lists of objects
 void to_json(nlohmann::json& j, const Contact& contact) {
@@ -82,30 +90,77 @@ int main() {
 	std::string phoneNumber;
 	ContactType type;
 
-	//input
-	std::cout << "Name: ";
-	std::cin >> name;
+	int Selection = 0;
 
-	std::cout << "Surname: ";
-	std::cin >> surname;
+	while (true) {
+		std::cout << "========================================================" << std::endl;
+		std::cout << "||                                                    ||" << std::endl;
+		if (Selection == 0)
+			std::cout << "|| => ADD A FRIEND/PERSON                             ||" << std::endl;
+		else
+			std::cout << "||    ADD A FRIEND/PERSON                             ||" << std::endl;
+		if (Selection == 1)
+			std::cout << "|| => REMOVE A FRIEND                                 ||" << std::endl;
+		else
+			std::cout << "||    REMOVE A FRIEND                                 ||" << std::endl;
+		if (Selection == 2)
+			std::cout << "|| => EDIT A FRIEND                                   ||" << std::endl;
+		else
+			std::cout << "||    EDIT A FRIEND                                   ||" << std::endl;
+		std::cout << "||                                                    ||" << std::endl;
+		std::cout << "========================================================" << std::endl;
 
-	std::cout << "email: ";
-	std::cin >> email;
+		char input = 0;
+		switch (input = _getch()) {
+		case KEY_UP:
+			Selection--;
+			if (Selection < 0)
+				Selection = 2;
+			break;
 
-	std::cout << "Phone number: ";
-	std::cin >> phoneNumber;
+		case KEY_DOWN:
+			Selection++;
+			if (Selection > 2)
+				Selection = 0;
+			break;
+		}
 
-	std::cout << "Friend type: ";
+		system("cls");
 
-	std::cout << name;
-	std::cout << surname;
-	std::cout << email;
-	std::cout << phoneNumber;
+		if (input == KEY_ENTER)
+			break;
+	}
 
-	std::cout << std::endl;
-	Contact person("Howdy", "Snow", "random.email@something.com", "031425960", ContactType::normal);
-	std::cout << person.toString() << std::endl;
-	myContacts.emplace_back(person);
+	switch (Selection) {
+	case 0:
+		//input
+		std::cout << "Name: ";
+		std::cin >> name;
+
+		std::cout << "Surname: ";
+		std::cin >> surname;
+
+		std::cout << "email: ";
+		std::cin >> email;
+
+		std::cout << "Phone number: ";
+		std::cin >> phoneNumber;
+
+		std::cout << "Friend type: ";
+
+		std::cout << name;
+		std::cout << surname;
+		std::cout << email;
+		std::cout << phoneNumber;
+
+		std::cout << std::endl;
+		Contact person(name, surname, email, email, ContactType::normal);
+
+		std::cout << person.toString() << std::endl;
+		myContacts.emplace_back(person);
+	}
+
+	
 
 	Contact tmp("Rowdy", "Snow", "random.email@something.com", "031425960", ContactType::emergency);
 	myContacts.emplace_back(tmp);
@@ -115,3 +170,6 @@ int main() {
 
 	return 0;
 }
+
+//TO-DO:
+//load from file when launched
