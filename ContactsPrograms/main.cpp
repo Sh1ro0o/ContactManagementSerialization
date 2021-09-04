@@ -154,7 +154,7 @@ int main() {
 		std::cout << phoneNumber;
 
 		std::cout << std::endl;
-		Contact person(name, surname, email, email, ContactType::normal);
+		Contact person(name, surname, email, phoneNumber, ContactType::normal);
 
 		std::cout << person.toString() << std::endl;
 		myContacts.emplace_back(person);

@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+#custom defined files by me
+ContactsPrograms/savedata.json
+
 # User-specific files
 *.rsuser
 *.suo
