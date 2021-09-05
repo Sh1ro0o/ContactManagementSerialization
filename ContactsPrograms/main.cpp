@@ -14,6 +14,7 @@
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
 #define KEY_ENTER 13
+#define KEY_ESC 27
  
 //function that helps converting lists of structs into JSON lists of objects
 void to_json(nlohmann::json& j, const Contact& contact) {
@@ -22,7 +23,7 @@ void to_json(nlohmann::json& j, const Contact& contact) {
 		{"surname", contact.getSurname()},
 		{"email", contact.getEmail()},
 		{"phoneNumber", contact.getPhoneNumber()},
-		{"type", contact.typeToString()}
+		{"type", contact.getTypeToString()}
 	};
 }
 
@@ -83,6 +84,110 @@ void contactsSerialization(std::vector<Contact> &contacts) {
 	myFileWriting.close();
 }
 
+//Prompts a contact selection screen. When a contact is selected it returns an index of that contact otherwise it returns -1
+int selectContact(std::vector<Contact>& contacts) {
+	short selection = 0;
+	bool exitloop = false;
+
+	if (contacts.size() > 0) {
+		while (contacts.size() > 0 && !exitloop) {
+			std::cout << "   ||CHOOSE WHO YOU WISH TO REMOVE||" << std::endl;
+			std::cout << "   =================================" << std::endl;
+			for (int i = 0; i < contacts.size(); i++) {
+				if (i == selection)
+					std::cout << "=> " + contacts[i].toString() << std::endl;
+				else
+					std::cout << "   " + contacts[i].toString() << std::endl;
+			}
+			std::cout << "   =================================" << std::endl;
+			std::cout << "   ==PRESS ESC TO EXIT==" << std::endl;
+
+			char input = 0;
+			switch (input = _getch()) {
+			case KEY_UP:
+				selection--;
+				if (selection < 0)
+					selection = contacts.size() - 1;
+				break;
+
+			case KEY_DOWN:
+				selection++;
+				if (selection == contacts.size())
+					selection = 0;
+				break;
+
+			case KEY_ENTER:
+				//return index of the selected contact
+				return selection;
+				break;
+
+				//exits with esc press
+			case KEY_ESC:
+				exitloop = true;
+				break;
+			}
+			system("cls");
+		}
+		//returns -1 if no contact has been selected
+		return -1;
+	}
+	else {
+		std::cout << "Sorry, NO FRIENDS :(" << std::endl << std::endl;
+		system("pause");
+		return -1;
+	}
+}
+
+ContactType selectFriendType() {
+	system("cls");
+
+	int typeSelection = 0;
+	while (true) {
+		std::cout << "Friend type:";
+		if (typeSelection == 0)
+			std::cout << "  => Normal";
+		else
+			std::cout << "     Normal";
+		if (typeSelection == 1)
+			std::cout << "  => Favorite";
+		else
+			std::cout << "     Favorite";
+		if (typeSelection == 2)
+			std::cout << "  => Emergency";
+		else
+			std::cout << "     Emergency";
+
+
+		char typeInput = 0;
+		switch (typeInput = _getch()) {
+		case KEY_UP:
+		case KEY_RIGHT:
+			if (typeSelection == 2)
+				typeSelection = 0;
+			else
+				typeSelection++;
+			break;
+
+		case KEY_DOWN:
+		case KEY_LEFT:
+			if (typeSelection == 0)
+				typeSelection = 2;
+			else
+				typeSelection--;
+			break;
+		}
+
+		if (typeInput == KEY_ENTER) {
+			return static_cast<ContactType>(typeSelection);
+			system("cls");
+			break;
+		}
+
+		system("cls");
+	}
+}
+
+
 int main() {
 	//vector with all the contacts
 	std::vector<Contact> myContacts;
@@ -105,6 +210,8 @@ int main() {
 
 	while (true) {
 		while (true) {
+			system("cls");
+
 			std::cout << "========================================================" << std::endl;
 			std::cout << "||                                                    ||" << std::endl;
 			if (Selection == 0)
@@ -137,14 +244,14 @@ int main() {
 				break;
 			}
 
-			system("cls");
-
-			if (input == KEY_ENTER)
+			if (input == KEY_ENTER) {
+				system("cls");
 				break;
+			}
 		}
 
 		switch (Selection) {
-		//ADD A FRIEND CASE
+			//ADD A FRIEND CASE
 		case 0:
 		{
 			std::cout << "Name: ";
@@ -159,7 +266,7 @@ int main() {
 			std::cout << "Phone number: ";
 			std::cin >> phoneNumber;
 
-			std::cout << "Friend type: ";
+			type = selectFriendType();
 
 			std::cout << name;
 			std::cout << surname;
@@ -167,7 +274,7 @@ int main() {
 			std::cout << phoneNumber;
 
 			std::cout << std::endl;
-			Contact person(name, surname, email, phoneNumber, ContactType::normal);
+			Contact person(name, surname, email, phoneNumber, type);
 			system("cls");
 
 			std::cout << "Do you wish to add a friend: " << person.toString() << " ?" << std::endl;
@@ -178,9 +285,12 @@ int main() {
 			switch (input = _getch()) {
 			case KEY_ENTER:
 				myContacts.emplace_back(person);
-				std::cout << "Friend successfully added!";
+
+				system("cls");
+				std::cout << "Friend successfully added!" << std::endl << std::endl;
 				//saves the new person created
 				contactsSerialization(myContacts);
+				system("pause");
 				break;
 
 			default:
@@ -193,62 +303,89 @@ int main() {
 
 		//REMOVE A FRIEND CASE
 		case 1:
-			short selectionRemoval = 0;
-			
-			if (myContacts.size() > 0) {
-				while (myContacts.size() > 0) {
-					std::cout << "   ||CHOOSE WHO YOU WISH TO REMOVE||" << std::endl;
-					std::cout << "   =================================" << std::endl;
-					for (int i = 0; i < myContacts.size(); i++) {
-						if (i == selectionRemoval)
-							std::cout << "=> " + myContacts[i].toString() << std::endl;
-						else
-							std::cout << "   " + myContacts[i].toString() << std::endl;
-					}
-
-					char input = 0;
-					switch (input = _getch()) {
-					case KEY_UP:
-						selectionRemoval--;
-						if (selectionRemoval < 0)
-							selectionRemoval = myContacts.size() - 1;
-						break;
-
-					case KEY_DOWN:
-						selectionRemoval++;
-						if (selectionRemoval == myContacts.size())
-							selectionRemoval = 0;
-						break;
-					}
-
-					system("cls");
-
-					if (input == KEY_ENTER) {
-						std::cout << "Are you sure you wish to remove " << myContacts[selectionRemoval].getName() << " "
-							<< myContacts[selectionRemoval].getSurname() << " ?" << std::endl;
-						std::cout << "\npress ENTER to confirm, ANY key to cancel..." << std::endl;
-						input = _getch();
-						if (input == KEY_ENTER) {
-							myContacts.erase(myContacts.begin() + selectionRemoval);
-							break;
-						}
-						break;
-					}
+		{
+			int removalIndex = selectContact(myContacts);
+			char input = 0;
+			if (removalIndex > -1) {
+				//contact removal confirmation and removal
+				std::cout << "\nAre you sure you wish to remove " << myContacts[removalIndex].getName() << " "
+					<< myContacts[removalIndex].getSurname() << " ?" << std::endl;
+				std::cout << "\npress ENTER to confirm, ANY key to cancel..." << std::endl;
+				input = _getch();
+				if (input == KEY_ENTER) {
+					myContacts.erase(myContacts.begin() + removalIndex);
 				}
 			}
-			else {
-				std::cout << "Sorry, NO FRIENDS :(" << std::endl << std::endl;
-				system("pause");
+			break;
+		}
+
+		//EDIT A FRIEND CASE
+		case 2:
+		{
+			//returns index of a friend you wish to edit
+			int editIndex = selectContact(myContacts);
+
+			int editSelection = 0;
+
+			while (true) {
+				if (editSelection == 0)
+					std::cout << " => Name: " << myContacts[editIndex].getName() << std::endl;
+				else
+					std::cout << "    Name: " << myContacts[editIndex].getName() << std::endl;
+				if (editSelection == 1)
+					std::cout << " => Surname: " << myContacts[editIndex].getSurname() << std::endl;
+				else
+					std::cout << "    Surname: " << myContacts[editIndex].getSurname() << std::endl;
+				if (editSelection == 2)
+					std::cout << " => Email: " << myContacts[editIndex].getEmail() << std::endl;
+				else
+					std::cout << "    Email: " << myContacts[editIndex].getEmail() << std::endl;
+				if (editSelection == 3)
+					std::cout << " => Phone number: " << myContacts[editIndex].getPhoneNumber() << std::endl;
+				else
+					std::cout << "    Phone number: " << myContacts[editIndex].getPhoneNumber() << std::endl;
+				if (editSelection == 4)
+					std::cout << " => Type: " << myContacts[editIndex].getTypeToString() << std::endl;
+				else
+					std::cout << "    Type: " << myContacts[editIndex].getTypeToString() << std::endl;
+
+				char input = 0;
+				switch (input = _getch()) {
+				case KEY_DOWN:
+					if (editSelection == 4)
+						editSelection = 0;
+					else
+						editSelection++;
+					break;
+
+				case KEY_UP:
+					if (editSelection == 0)
+						editSelection = 2;
+					else
+						editSelection--;
+					break;
+				}
+
+				if (input == KEY_ENTER) {
+					system("cls");
+					break;
+				}
+
+				system("cls");
 			}
 		}
+
+
+		
+
+		}
+		//contactsDeserialization(myContacts);
+
 	}
-
-	//contactsDeserialization(myContacts);
-
-	return 0;
+		return 0;
 }
 
 //TO-DO:
 //load from file when launched
 //make the selection a function you call in a loop
-//create friend type input Left arrow right arrow selection
+//create 

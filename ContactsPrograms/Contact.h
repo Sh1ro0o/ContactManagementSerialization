@@ -7,14 +7,7 @@
 #include "ContactType.h"
 
 struct Contact {
-private:
-	std::string name;
-	std::string surname;
-	std::string email;
-	std::string phoneNumber;
-	ContactType type;
 public:
-
 	Contact() {
 		this->name = "none";
 		this->surname = "none";
@@ -96,7 +89,7 @@ public:
 		return type;
 	}
 
-	std::string typeToString() const {
+	std::string getTypeToString() const {
 		if (type == ContactType::emergency)
 			return "emergency";
 		else if (type == ContactType::favorite)
@@ -107,9 +100,16 @@ public:
 
 	std::string toString() const {
 		std::stringstream ss;
-		ss << name << " " << surname << " " << email << " " << phoneNumber << " " << typeToString();
+		ss << name << " " << surname << " " << email << " " << phoneNumber << " " << getTypeToString();
 		return ss.str();
 	}
+
+private:
+	std::string name;
+	std::string surname;
+	std::string email;
+	std::string phoneNumber;
+	ContactType type;
 };
 
 #endif
