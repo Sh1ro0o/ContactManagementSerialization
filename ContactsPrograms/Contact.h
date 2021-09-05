@@ -104,6 +104,18 @@ public:
 		return ss.str();
 	}
 
+	std::string toStringPretty() const {
+		std::stringstream ss;
+		ss << "**********************************************************\n";
+		ss << "|| Name:         " << name << std::endl;
+		ss << "|| Surname:      " << surname << std::endl;
+		ss << "|| Email:        " << email << std::endl;
+		ss << "|| Phone:        " << phoneNumber << std::endl;
+		ss << "|| Type:         " << getTypeToString() << std::endl;
+		ss << "**********************************************************\n";
+
+		return ss.str();
+	}
 private:
 	std::string name;
 	std::string surname;

@@ -69,7 +69,7 @@ void contactsSerialization(std::vector<Contact> &contacts) {
 	//Seserialization
 	//converting Contacts struct into JSON
 	nlohmann::json j(contacts);
-	std::cout << j.dump(3) << std::endl;
+	//::cout << j.dump(3) << std::endl;
 
 	//write JSON data to file named "savedata.json"
 	std::fstream myFileWriting;
@@ -192,19 +192,15 @@ int main() {
 	//vector with all the contacts
 	std::vector<Contact> myContacts;
 
+	//load all contacts from file if it already exists
+	contactsDeserialization(myContacts);
+
 	//variables for storing into a Contact object
 	std::string name;
 	std::string surname;
 	std::string email;
 	std::string phoneNumber;
 	ContactType type;
-
-
-	Contact tmp("Rowdy", "Snow", "random.email@something.com", "031425960", ContactType::emergency);
-	myContacts.emplace_back(tmp);
-
-	Contact tmp2("Johanna", "Snow", "random.email@something.com", "031425960", ContactType::emergency);
-	myContacts.emplace_back(tmp2);
 
 	int Selection = 0;
 
@@ -226,6 +222,14 @@ int main() {
 				std::cout << "|| => EDIT A FRIEND                                   ||" << std::endl;
 			else
 				std::cout << "||    EDIT A FRIEND                                   ||" << std::endl;
+			if (Selection == 3)
+				std::cout << "|| => DISPLAY FRIENDS                                 ||" << std::endl;
+			else
+				std::cout << "||    DISPLAY FRIENDS                                 ||" << std::endl;
+			if (Selection == 4)
+				std::cout << "|| => EXIT                                            ||" << std::endl;
+			else
+				std::cout << "||    EXIT                                            ||" << std::endl;
 			std::cout << "||                                                    ||" << std::endl;
 			std::cout << "========================================================" << std::endl;
 
@@ -234,12 +238,12 @@ int main() {
 			case KEY_UP:
 				Selection--;
 				if (Selection < 0)
-					Selection = 2;
+					Selection = 4;
 				break;
 
 			case KEY_DOWN:
 				Selection++;
-				if (Selection > 2)
+				if (Selection > 4)
 					Selection = 0;
 				break;
 			}
@@ -307,6 +311,7 @@ int main() {
 			int removalIndex = selectContact(myContacts);
 			char input = 0;
 			if (removalIndex > -1) {
+				system("cls");
 				//contact removal confirmation and removal
 				std::cout << "\nAre you sure you wish to remove " << myContacts[removalIndex].getName() << " "
 					<< myContacts[removalIndex].getSurname() << " ?" << std::endl;
@@ -314,6 +319,8 @@ int main() {
 				input = _getch();
 				if (input == KEY_ENTER) {
 					myContacts.erase(myContacts.begin() + removalIndex);
+					//saving updates to file
+					contactsSerialization(myContacts);
 				}
 			}
 			break;
@@ -396,6 +403,8 @@ int main() {
 					else if (editSelection == 4) {
 						myContacts[editIndex].setType(selectFriendType());
 					}
+					//saving updated contacts to file
+					contactsSerialization(myContacts);
 					break;
 				}
 				else if (input == KEY_ESC)
@@ -403,14 +412,21 @@ int main() {
 
 				system("cls");
 			}
+			break;
 		}
 
+		//DISPLAY FRIENDS
+		case 3:
+			for (int i = 0; i < myContacts.size(); i++) {
+				std::cout << myContacts[i].toStringPretty() << std::endl;
+			}
+			system("pause");
+			break;
 
-		
-
+		//EXIT PROGRAM
+		case 4:
+			return 0;
 		}
-		//contactsDeserialization(myContacts);
-
 	}
 		return 0;
 }
