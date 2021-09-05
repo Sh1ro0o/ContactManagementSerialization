@@ -91,7 +91,7 @@ int selectContact(std::vector<Contact>& contacts) {
 
 	if (contacts.size() > 0) {
 		while (contacts.size() > 0 && !exitloop) {
-			std::cout << "   ||CHOOSE WHO YOU WISH TO REMOVE||" << std::endl;
+			std::cout << "   ||  SELECT A FRIEND TO REMOVE  ||" << std::endl;
 			std::cout << "   =================================" << std::endl;
 			for (int i = 0; i < contacts.size(); i++) {
 				if (i == selection)
@@ -323,11 +323,13 @@ int main() {
 		case 2:
 		{
 			//returns index of a friend you wish to edit
-			int editIndex = selectContact(myContacts);
+			int editIndex = selectContact(myContacts);			
+			system("cls");
 
 			int editSelection = 0;
-
-			while (true) {
+			while (editIndex != -1) {
+				std::cout << "   ||   SELECT PROPERTY TO EDIT   ||" << std::endl;
+				std::cout << "   =================================" << std::endl;
 				if (editSelection == 0)
 					std::cout << " => Name: " << myContacts[editIndex].getName() << std::endl;
 				else
@@ -348,6 +350,8 @@ int main() {
 					std::cout << " => Type: " << myContacts[editIndex].getTypeToString() << std::endl;
 				else
 					std::cout << "    Type: " << myContacts[editIndex].getTypeToString() << std::endl;
+				std::cout << "   =================================" << std::endl;
+				std::cout << "   ==PRESS ESC TO EXIT==" << std::endl;
 
 				char input = 0;
 				switch (input = _getch()) {
@@ -368,8 +372,34 @@ int main() {
 
 				if (input == KEY_ENTER) {
 					system("cls");
+					std::string newInput;
+					if (editSelection == 0) {
+						std::cout << "Change " << myContacts[editIndex].getName() << " to: ";
+						std::cin >> newInput;
+						myContacts[editIndex].setName(newInput);
+					}
+					else if (editSelection == 1) {
+						std::cout << "Change " << myContacts[editIndex].getSurname() << " to: ";
+						std::cin >> newInput;
+						myContacts[editIndex].setSurname(newInput);
+					}
+					else if (editSelection == 2) {
+						std::cout << "Change " << myContacts[editIndex].getEmail() << " to: ";
+						std::cin >> newInput;
+						myContacts[editIndex].setEmail(newInput);
+					}
+					else if (editSelection == 3) {
+						std::cout << "Change " << myContacts[editIndex].getPhoneNumber() << " to: ";
+						std::cin >> newInput;
+						myContacts[editIndex].setPhoneNumber(newInput);
+					}
+					else if (editSelection == 4) {
+						myContacts[editIndex].setType(selectFriendType());
+					}
 					break;
 				}
+				else if (input == KEY_ESC)
+					break;
 
 				system("cls");
 			}
@@ -388,4 +418,3 @@ int main() {
 //TO-DO:
 //load from file when launched
 //make the selection a function you call in a loop
-//create 
