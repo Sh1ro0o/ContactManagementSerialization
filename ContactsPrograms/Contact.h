@@ -116,6 +116,7 @@ public:
 
 		return ss.str();
 	}
+
 private:
 	std::string name;
 	std::string surname;

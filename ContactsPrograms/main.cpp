@@ -6,6 +6,7 @@
 #include <vector>
 #include <Windows.h>
 #include <conio.h>
+#include <string>
 #include <nlohmann/json.hpp>
 
 //keypress definitions
@@ -260,16 +261,16 @@ int main() {
 		case 0:
 		{
 			std::cout << "Name: ";
-			std::cin >> name;
+			std::getline(std::cin, name);
 
 			std::cout << "Surname: ";
-			std::cin >> surname;
+			std::getline(std::cin, surname);
 
 			std::cout << "email: ";
-			std::cin >> email;
+			std::getline(std::cin, email);
 
 			std::cout << "Phone number: ";
-			std::cin >> phoneNumber;
+			std::getline(std::cin, phoneNumber);
 
 			type = selectFriendType();
 
@@ -383,22 +384,22 @@ int main() {
 					std::string newInput;
 					if (editSelection == 0) {
 						std::cout << "Change " << myContacts[editIndex].getName() << " to: ";
-						std::cin >> newInput;
+						std::getline(std::cin, newInput);
 						myContacts[editIndex].setName(newInput);
 					}
 					else if (editSelection == 1) {
 						std::cout << "Change " << myContacts[editIndex].getSurname() << " to: ";
-						std::cin >> newInput;
+						std::getline(std::cin, newInput);
 						myContacts[editIndex].setSurname(newInput);
 					}
 					else if (editSelection == 2) {
 						std::cout << "Change " << myContacts[editIndex].getEmail() << " to: ";
-						std::cin >> newInput;
+						std::getline(std::cin, newInput);
 						myContacts[editIndex].setEmail(newInput);
 					}
 					else if (editSelection == 3) {
 						std::cout << "Change " << myContacts[editIndex].getPhoneNumber() << " to: ";
-						std::cin >> newInput;
+						std::getline(std::cin, newInput);
 						myContacts[editIndex].setPhoneNumber(newInput);
 					}
 					else if (editSelection == 4) {
