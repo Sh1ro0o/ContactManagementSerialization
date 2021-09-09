@@ -44,23 +44,24 @@ void contactsDeserialization(std::vector<Contact> &contacts) {
 	myFileReading.exceptions(std::ifstream::failbit);
 	try {
 		myFileReading.open("savedata.json");
+		std::cout << "File savedata.json found!" << std::endl;
+		std::cout << "Loading file..." << std::endl;
 		//reads whole file and saves it into a string
 		std::string content((std::istreambuf_iterator<char>(myFileReading)), (std::istreambuf_iterator<char>()));
 		myFileReading.close();
 
-		std::cout << "Loading file..." << std::endl;
 		//parses string into json object
 		nlohmann::json j = nlohmann::json::parse(content);
-		std::cout << j << std::endl;
+		//std::cout << j << std::endl;
 
 		//We convert JSON list of objects into vector of Contacts
 		std::vector<Contact> contacts2 = j;
 		contacts = contacts2;
-
+		
 		std::cout << "File loaded!" << std::endl;
 	}
 	catch (std::ifstream::failure fail) {
-		std::cout << "File name not correct or it does not exist! Make sure to name your text file \"savedata\"" << std::endl;
+		std::cout << "File does not exist yet so nothing was loaded!" << std::endl;
 	}
 }
 
@@ -417,9 +418,13 @@ int main() {
 
 		//DISPLAY FRIENDS
 		case 3:
-			for (int i = 0; i < myContacts.size(); i++) {
-				std::cout << myContacts[i].toStringPretty() << std::endl;
+			if (myContacts.size() > 0) {
+				for (int i = 0; i < myContacts.size(); i++) {
+					std::cout << myContacts[i].toStringPretty() << std::endl;
+				}
 			}
+			else
+				std::cout << "Sorry, NO FRIENDS :(" << std::endl << std::endl;
 			system("pause");
 			break;
 
@@ -430,7 +435,3 @@ int main() {
 	}
 		return 0;
 }
-
-//TO-DO:
-//load from file when launched
-//make the selection a function you call in a loop
