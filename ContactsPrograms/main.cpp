@@ -40,16 +40,16 @@ void from_json(const nlohmann::json& j, Contact& contact) {
 //Deserializes a vector of Contact structs into a JSON list of objects
 void contactsDeserialization(std::vector<Contact> &contacts) {
 	//Deserialization - read from file
-	std::ifstream myFileReading;
+	std::ifstream fileStream;
 
-	myFileReading.exceptions(std::ifstream::failbit);
+	fileStream.exceptions(std::ifstream::failbit);
 	try {
-		myFileReading.open("savedata.json");
+		fileStream.open("savedata.json");
 		std::cout << "File savedata.json found!" << std::endl;
 		std::cout << "Loading file..." << std::endl;
 		//reads whole file and saves it into a string
-		std::string content((std::istreambuf_iterator<char>(myFileReading)), (std::istreambuf_iterator<char>()));
-		myFileReading.close();
+		std::string content((std::istreambuf_iterator<char>(fileStream)), (std::istreambuf_iterator<char>()));
+		fileStream.close();
 
 		//parses string into json object
 		nlohmann::json j = nlohmann::json::parse(content);
@@ -93,8 +93,6 @@ int selectContact(std::vector<Contact>& contacts) {
 
 	if (contacts.size() > 0) {
 		while (contacts.size() > 0 && !exitloop) {
-			std::cout << "   ||  SELECT A FRIEND TO REMOVE  ||" << std::endl;
-			std::cout << "   =================================" << std::endl;
 			for (int i = 0; i < contacts.size(); i++) {
 				if (i == selection)
 					std::cout << "=> " + contacts[i].toString() << std::endl;
@@ -310,6 +308,8 @@ int main() {
 		//REMOVE A FRIEND CASE
 		case 1:
 		{
+			std::cout << "   ||  SELECT A FRIEND TO REMOVE  ||" << std::endl;
+			std::cout << "   =================================" << std::endl;
 			int removalIndex = selectContact(myContacts);
 			char input = 0;
 			if (removalIndex > -1) {
@@ -332,6 +332,8 @@ int main() {
 		case 2:
 		{
 			//returns index of a friend you wish to edit
+			std::cout << "   ||  SELECT A FRIEND TO EDIT  ||" << std::endl;
+			std::cout << "   =================================" << std::endl;
 			int editIndex = selectContact(myContacts);			
 			system("cls");
 
