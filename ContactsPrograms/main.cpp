@@ -74,16 +74,16 @@ void contactsSerialization(std::vector<Contact> &contacts) {
 	//::cout << j.dump(3) << std::endl;
 
 	//write JSON data to file named "savedata.json"
-	std::fstream myFileWriting;
-	myFileWriting.exceptions(std::ifstream::badbit);
+	std::fstream fileStream;
+	fileStream.exceptions(std::ifstream::badbit);
 	try {
-		myFileWriting.open("savedata.json", std::fstream::out);
-		myFileWriting << j.dump(3);
+		fileStream.open("savedata.json", std::fstream::out);
+		fileStream << j.dump(3);
 	}
 	catch (std::ifstream::failure fail) {
 		std::cout << "Failed to write!" << std::endl;
 	}
-	myFileWriting.close();
+	fileStream.close();
 }
 
 //Prompts a contact selection screen. When a contact is selected it returns an index of that contact otherwise it returns -1
